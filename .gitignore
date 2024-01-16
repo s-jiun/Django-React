@@ -1,6 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node,venv,visualstudiocode,pycharm
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,venv,visualstudiocode,pycharm
-
+.env
 ### Node ###
 # Logs
 logs
