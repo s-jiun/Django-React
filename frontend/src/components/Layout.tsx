@@ -1,83 +1,83 @@
 import * as React from 'react';
-import { useState }  from 'react';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
-import type { MenuProps, MenuTheme } from 'antd';
-import { Menu, Switch } from 'antd';
+import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Breadcrumb, Layout, Menu, theme } from 'antd';
 
-type MenuItem = Required<MenuProps>['items'][number];
+const { Header, Content, Sider } = Layout;
 
-function getItem(
-  label: React.ReactNode,
-  key?: React.Key | null,
-  icon?: React.ReactNode,
-  children?: MenuItem[],
-  type?: 'group',
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-    type,
-  } as MenuItem;
-}
+const items1: MenuProps['items'] = ['1', '2', '3'].map((key) => ({
+  key,
+  label: `nav ${key}`,
+}));
 
-const items: MenuItem[] = [
-  getItem('Navigation One', 'sub1', <MailOutlined />, [
-    getItem('Option 1', '1'),
-    getItem('Option 2', '2'),
-    getItem('Option 3', '3'),
-    getItem('Option 4', '4'),
-  ]),
+const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
+  (icon, index) => {
+    const key = String(index + 1);
 
-  getItem('Navigation Two', 'sub2', <AppstoreOutlined />, [
-    getItem('Option 5', '5'),
-    getItem('Option 6', '6'),
-    getItem('Submenu', 'sub3', null, [getItem('Option 7', '7'), getItem('Option 8', '8')]),
-  ]),
+    return {
+      key: `sub${key}`,
+      icon: React.createElement(icon),
+      label: `subnav ${key}`,
 
-  getItem('Navigation Three', 'sub4', <SettingOutlined />, [
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10'),
-    getItem('Option 11', '11'),
-    getItem('Option 12', '12'),
-  ]),
-];
+      children: new Array(4).fill(null).map((_, j) => {
+        const subKey = index * 4 + j + 1;
+        return {
+          key: subKey,
+          label: `option${subKey}`,
+        };
+      }),
+    };
+  },
+);
 
-const Layout: React.FC = () => {
-  const [theme, setTheme] = useState<MenuTheme>('dark');
-  const [current, setCurrent] = useState('1');
-
-  const changeTheme = (value: boolean) => {
-    setTheme(value ? 'dark' : 'light');
-  };
-
-  const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
-    setCurrent(e.key);
-  };
+const AppLayout: React.FC = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
 
   return (
-    <>
-      <Switch
-        checked={theme === 'dark'}
-        onChange={changeTheme}
-        checkedChildren="Dark"
-        unCheckedChildren="Light"
-      />
-      <br />
-      <br />
-      <Menu
-        theme={theme}
-        onClick={onClick}
-        style={{ width: 256 }}
-        defaultOpenKeys={['sub1']}
-        selectedKeys={[current]}
-        mode="inline"
-        items={items}
-      />
-    </>
+    <Layout>
+      <Header style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="demo-logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['2']}
+          items={items1}
+          style={{ flex: 1, minWidth: 0 }}
+        />
+      </Header>
+      <Layout>
+        <Sider width={200} style={{ background: colorBgContainer }}>
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub1']}
+            style={{ height: '100%', borderRight: 0 }}
+            items={items2}
+          />
+        </Sider>
+        <Layout style={{ padding: '0 24px 24px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+          <Content
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            Content
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
 };
 
-export default Layout;
+export default AppLayout;
