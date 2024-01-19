@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 
 const { Header, Content, Sider } = Layout;
 
@@ -30,7 +30,11 @@ const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOu
   },
 );
 
-const AppLayout: React.FC = () => {
+type Props = {
+  children: React.ReactNode;
+}
+
+const AppLayout: React.FC<Props> = ({children}) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -58,11 +62,6 @@ const AppLayout: React.FC = () => {
           />
         </Sider>
         <Layout style={{ padding: '0 24px 24px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
           <Content
             style={{
               padding: 24,
@@ -72,7 +71,7 @@ const AppLayout: React.FC = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            Content
+            {children}
           </Content>
         </Layout>
       </Layout>
