@@ -66,7 +66,7 @@ const AppLayout: React.FC<Props> = ({children}) => {
             style={{
               padding: 24,
               margin: 0,
-              minHeight: 280,
+              minHeight: '100vh',
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}

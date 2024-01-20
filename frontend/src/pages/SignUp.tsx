@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const { Meta } = Card;
 
 const SignUp: React.FC = () => (
-    <Flex justify='space-evenly' align='center'>\
+    <Flex justify='space-evenly' align='center'>
         <Link to={"/signup/seller"}>
             <Card
             hoverable

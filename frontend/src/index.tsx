@@ -4,8 +4,7 @@ import Home from 'pages/Home'
 import AppLayout from "components/Layout";
 import * as React from 'react';
 import SignUp from "pages/SignUp";
-import SellerSignUp from "pages/SellerSignUp";
-import GeneralSignUp from "pages/GeneralSignUp";
+import UserSignUp from "pages/UserSignUp";
 
 const router = createBrowserRouter([
   {
@@ -18,11 +17,11 @@ const router = createBrowserRouter([
   },
   {
     path: "signup/seller",
-    element: <AppLayout children={<SellerSignUp />} />,
+    element: <AppLayout children={<UserSignUp />} />,
   },
   {
     path: "signup/general",
-    element: <AppLayout children={<GeneralSignUp />} />,
+    element: <AppLayout children={<UserSignUp />} />,
   },
 ]);
 
