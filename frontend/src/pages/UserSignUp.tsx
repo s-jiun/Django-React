@@ -1,5 +1,10 @@
 import * as React from 'react';
-import { Button, Checkbox, Form, Input, Flex } from 'antd';
+import { Button, Form, Input, Flex } from 'antd';
+import DaumPostcode from "react-daum-postcode";
+import * as Modal from "react-modal";
+import type { SearchProps } from 'antd/es/input/Search';
+
+const { Search } = Input;
 
 const onFinish = (values: any) => {
   console.log('Success:', values);
@@ -13,6 +18,20 @@ const onFinishFailed = (errorInfo: any) => {
 function isValidEmail(email) {
   return /\S+@\S+\.\S+/.test(email);
 }
+
+const customStyles = {
+  overlay: {
+      backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  content: {
+      left: "0",
+      margin: "auto",
+      width: "500px",
+      height: "600px",
+      padding: "0",
+      overflow: "hidden",
+  },
+};
 
 type FieldType = {
   username?: string;
@@ -30,9 +49,30 @@ const UserSignUp: React.FC = () => {
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState(null);
 
-  const [pw1, setPw1] = React.useState('');
-  const [pw2, setPw2] = React.useState('');
+  const [pw1, setPw1] = React.useState<string>('');
+  const [pw2, setPw2] = React.useState<string>('');
   const [pwError, setPwError] = React.useState(null);
+  const [zipCode, setZipcode] = React.useState<string>("");
+  const [roadAddress, setRoadAddress] = React.useState<string>("");
+  const [detailAddress, setDetailAddress] = React.useState<string>("");
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+
+  const toggle = () =>{
+    setIsOpen(!isOpen);
+  }
+
+  const changeHandler = (e:React.ChangeEvent<HTMLInputElement>) =>{
+    setDetailAddress(e.target.value);
+  }
+
+  const completeHandler = (data:any) =>{
+    setZipcode(data.zonecode);
+    setRoadAddress(data.roadAddress);
+    setIsOpen(false);
+  }
+
+  React.useEffect(() => {
+  }, [zipCode, roadAddress]);
 
   const handleEmailChange = event => {
     if (!isValidEmail(event.target.value)) {
@@ -65,18 +105,13 @@ const UserSignUp: React.FC = () => {
       onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
-      <Flex gap="small" wrap="wrap" justify='center'>
-        <Form.Item<FieldType>
-          label="아이디"
-          name="username"
-          rules={[{ required: true, message: '아이디는 필수 입력값입니다' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Button type="primary">
-          중복검사
-        </Button>
-      </Flex>
+      <Form.Item<FieldType>
+        label="아이디"
+        name="username"
+        rules={[{ required: true, message: '아이디는 필수 입력값입니다' }]}
+      >
+        <Search enterButton="중복검사"/>
+      </Form.Item>
   
       <Form.Item<FieldType>
         label="비밀번호"
@@ -112,33 +147,31 @@ const UserSignUp: React.FC = () => {
         <Input />
       </Form.Item>
   
-      <Flex gap="small" wrap="wrap" justify='center'>
-        <Form.Item<FieldType>
-          label="우편번호"
-          name="zip_code"
-          rules={[{ required: true, message: '우편번호는 필수 입력값입니다' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Button type="primary">
-          우편번호 찾기
-        </Button>
-      </Flex>
+      <Form.Item<FieldType>
+        label="우편번호"
+        name="zip_code"
+        rules={[{ required: true, message: '우편번호는 필수 입력값입니다' }]}
+      >
+        <Search enterButton="우편번호 찾기" onSearch={toggle} value={zipCode} readOnly placeholder="우편번호" />
+      </Form.Item>
+      <Modal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
+        <DaumPostcode onComplete={completeHandler} />
+      </Modal>
   
       <Form.Item<FieldType>
         label="주소"
         name="address"
         rules={[{ required: true, message: '주소는 필수 입력값입니다' }]}
       >
-        <Input />
+        <Input value={roadAddress} readOnly placeholder="도로명 주소" />
       </Form.Item>
-  
+
       <Form.Item<FieldType>
         label="상세 주소"
         name="detailAddress"
-        rules={[{ required: true, message: '상세 주소는 필수 입력값입니다' }]}
+        rules={[{ required: true, message: '주소는 필수 입력값입니다' }]}
       >
-        <Input />
+        <Input type="text" onChange={changeHandler} value={detailAddress} placeholder="상세주소" />
       </Form.Item>
   
       <Form.Item>
